@@ -1,28 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <title>Cabutan Undian 2026-2027</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 20px; background: #f4f7f6; }
+        .container { background: white; padding: 25px; border-radius: 10px; width: 100%; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background: #27ae60; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold; }
+        #hasil { margin-top: 20px; padding: 15px; border-radius: 5px; display: none; text-align: center; border: 2px solid #27ae60; }
+    </style>
+</head>
 <body>
-    <input type="text" id="nama" placeholder="Nama">
-    <input type="text" id="tel" placeholder="No Tel">
-    <button onclick="hantar()">Cabut</button>
-    <div id="hasil" style="margin-top:20px; font-weight:bold;"></div>
 
-    <script>
-        async function hantar() {
-            const nama = document.getElementById('nama').value;
-            const data = { nama: nama, tel: document.getElementById('tel').value, bayaran: "100" };
-            
-            // Papar terus (tak perlu tunggu server)
-            document.getElementById('hasil').innerHTML = "Memproses...";
-            
-            await fetch("https://script.google.com/macros/s/AKfycbyUYKN74qEFoxQal2EidwcDl14y3Zw6joOzjSVtjR5jUWl3qlReu6vdmjBB_q5VeMNwdg/exec", {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify(data)
-            });
+<div class="container">
+    <h2>Daftar Cabutan</h2>
+    <input type="text" id="nama" placeholder="Nama Penuh" required>
+    <input type="text" id="tel" placeholder="No Telefon" required>
+    <select id="bayaran">
+        <option value="100">RM 100</option>
+        <option value="200">RM 200</option>
+    </select>
+    <button id="btn" onclick="hantar()">Cabut Nombor Giliran</button>
+    <div id="hasil"></div>
+</div>
 
-            // Tunjuk hasil terus
-            document.getElementById('hasil').innerHTML = "Pendaftaran Berjaya!<br>Nama: " + nama + "<br>No Giliran: (Sila semak sheet)";
-        }
-    </script>
+<script>
+    async function hantar() {
+        const nama = document.getElementById('nama').value;
+        const tel = document.getElementById('tel').value;
+        const bayaran = document.getElementById('bayaran').value;
+        const btn = document.getElementById('btn');
+        const hasil = document.getElementById('hasil');
+
+        if(!nama || !tel) { alert("Sila isi nama dan telefon!"); return; }
+
+        // Logik: Ismail bin Ishak = 1, Lain = 2-12
+        let noGiliran = (nama.toLowerCase().trim() === "ismail bin ishak") ? 1 : Math.floor(Math.random() * 11) + 2;
+
+        btn.disabled = true;
+        btn.innerText = "Memproses...";
+
+        const data = { nama: nama, tel: tel, bayaran: bayaran, noGiliran: noGiliran };
+
+        await fetch("https://script.google.com/macros/s/AKfycbyx8t4THNcRzexI8d_ZaK1702yi0i5FeOcM1hV_wJgsgn4VmuyTmzXGUAG8KW1oX3gkqQ/exec", {
+            method: "POST",
+            mode: "no-cors",
+            body: JSON.stringify(data)
+        });
+
+        hasil.style.display = "block";
+        hasil.innerHTML = "<strong>Pendaftaran Berjaya!</strong><br><br>Nama: " + nama + "<br>No Giliran Anda:<br><h1 style='color:#27ae60;'>" + noGiliran + "</h1>";
+        btn.disabled = false;
+        btn.innerText = "Cabut Nombor Giliran";
+    }
+</script>
 </body>
 </html>
