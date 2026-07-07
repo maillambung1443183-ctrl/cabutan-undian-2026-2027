@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Cabutan</title>
+    <title>Sistem Cabutan Undian</title>
     <style>
         body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
         .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
@@ -37,11 +37,16 @@
         btn.disabled = true;
         btn.innerText = "Memproses...";
         
-        const URL = "URL_WEB_APP_ANDA"; // <--- TUKAR SINI
+        // PASTI ANDA MASUKKAN URL DI BAWAH INI
+        const URL = "https://script.google.com/macros/s/AKfycbzUU4uBLlF8VsG_Q2MhIWQ6OdlZWYUn404MM6gl78zB1Xp6Yb2X0GqDKuFonTPDWv8p6Q/exec";
 
         try {
-            const response = await fetch(URL, { method: "POST", body: JSON.stringify(data) });
+            const response = await fetch(URL, { 
+                method: "POST", 
+                body: JSON.stringify(data) 
+            });
             const res = await response.json();
+            
             resDiv.style.display = "block";
             if(res.status === 'success') {
                 resDiv.className = "success";
@@ -51,7 +56,7 @@
                 resDiv.innerText = res.message;
             }
         } catch (e) {
-            alert("Ralat sambungan.");
+            alert("Ralat: Pastikan anda telah melakukan 'Deploy' di Apps Script.");
         } finally {
             btn.disabled = false;
             btn.innerText = "Cabut Nombor Giliran";
