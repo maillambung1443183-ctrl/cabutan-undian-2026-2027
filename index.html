@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Cabutan Giliran</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: #333; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; transition: background 0.3s; }
+        button:hover { background: #219150; }
+        button:disabled { background: #95a5a6; }
+        #result { margin-top: 20px; padding: 20px; border-radius: 8px; display: none; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Pendaftaran Cabutan</h2>
+    <input type="text" id="nama" placeholder="Nama Penuh" required>
+    <input type="text" id="tel" placeholder="No Telefon" required>
+    <select id="bayaran">
+        <option value="100">RM 100</option>
+        <option value="200">RM 200</option>
+    </select>
+    <button id="submitBtn" onclick="hantar()">Cabut Nombor Giliran</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    async function hantar() {
+        const btn = document.getElementById('submitBtn');
+        const resDiv = document.getElementById('result');
+        const data = {
+            nama: document.getElementById('nama').value,
+            tel: document.getElementById('tel').value,
+            bayaran: document.getElementById('bayaran').value
+        };
+
+        if(!data.nama || !data.tel) { alert("Sila isi nama dan telefon!"); return; }
+
+        btn.disabled = true;
+        btn.innerText = "Memproses...";
+        resDiv.style.display = "none";
+
+        // Gantikan URL di bawah dengan URL Web App anda
+        const URL = "https://script.google.com/macros/s/AKfycbzUU4uBLlF8VsG_Q2MhIWQ6OdlZWYUn404MM6gl78zB1Xp6Yb2X0GqDKuFonTPDWv8p6Q/exec";
+
+        try {
+            const response = await fetch(URL, {
+                method: "POST",
+                mode: "no-cors", // Penting untuk elakkan masalah CORS
+                body: JSON.stringify(data)
+            });
+
+            // Oleh kerana menggunakan no-cors, kita anggap berjaya jika request selesai
+            resDiv.className = "success";
+            resDiv.innerHTML = "<strong>Pendaftaran Berjaya!</strong><br>Data telah direkodkan.";
+            resDiv.style.display = "block";
+        } catch (error) {
+            resDiv.className = "error";
+            resDiv.innerText = "Ralat: Sila cuba lagi.";
+            resDiv.style.display = "block";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Cabut Nombor Giliran";
+        }
+    }
+</script>
+</body>
+</html>
